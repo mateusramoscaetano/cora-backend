@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import { routes } from "../routes/health-check";
+import { doctorRoutes } from "../routes/doctor-routes";
+import { petOwnerRoutes } from "../routes/pet-owner-routes";
+import { petRoutes } from "../routes/pet-routes";
 
 const app = express();
 
@@ -14,5 +17,8 @@ app.use(
 );
 
 app.use(routes);
+app.use(doctorRoutes);
+app.use(petOwnerRoutes);
+app.use(petRoutes);
 
 export { app };
