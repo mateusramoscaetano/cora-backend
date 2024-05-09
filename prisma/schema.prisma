@@ -23,41 +23,40 @@ model Doctor {
   pet_owners PetOwner[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @default(now())
-
-  clinic   Clinic? @relation(fields: [clinicId], references: [id])
-  clinicId String? @db.ObjectId
 }
 
 model PetOwner {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  pets      Pet[]
-  email     String   @unique
-  password  String
-  phone     String
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  pets     Pet[]
+  email    String @unique
+  password String
+  phone    String
+
   reports   Report[]
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  doctor   Doctor? @relation(fields: [doctorId], references: [id])
-  doctorId String? @db.ObjectId
+  doctor   Doctor  @relation(fields: [doctorId], references: [id])
+  doctorId String  @db.ObjectId
   clinic   Clinic? @relation(fields: [clinicId], references: [id])
   clinicId String? @db.ObjectId
 }
 
 model Clinic {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  role       String     @default("user")
-  email      String     @unique
-  password   String
-  address    String
-  phone      String
-  doctors    Doctor[]
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  role     String @default("user")
+  email    String @unique
+  password String
+  address  String
+  phone    String
+
   pet_owners PetOwner[]
-  pet        Pet[]
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now())
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  Report    Report[]
 }
 
 model Pet {
@@ -68,8 +67,6 @@ model Pet {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
 
-  clinic       Clinic?  @relation(fields: [clinicId], references: [id])
-  clinicId     String?  @db.ObjectId
   pet_owner    PetOwner @relation(fields: [pet_owner_id], references: [id])
   pet_owner_id String   @db.ObjectId
 }
@@ -85,4 +82,6 @@ model Report {
   pet_owner    PetOwner @relation(fields: [pet_owner_id], references: [id])
   pet_owner_id String   @db.ObjectId
   pet_id       String   @db.ObjectId
+  clinic       Clinic   @relation(fields: [clinicId], references: [id])
+  clinicId     String   @db.ObjectId
 }
