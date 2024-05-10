@@ -6,7 +6,7 @@ import { badRequest } from "../../helpers/errors-response";
 
 export const createPetOwner = tryCatch(
   async (request: Request, response: Response) => {
-    const { email, name, password, phone } =
+    const { email, name, password, phone, clinicId } =
       request.body as ICreatePetOwnerRequestDto;
     const { id } = request.user;
 
@@ -17,6 +17,7 @@ export const createPetOwner = tryCatch(
         name,
         password,
         phone,
+        clinicId,
       },
       id
     );

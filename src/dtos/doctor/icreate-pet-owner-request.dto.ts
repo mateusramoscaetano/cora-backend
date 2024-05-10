@@ -5,6 +5,6 @@ export interface ICreatePetOwnerRequestDto {
 
   email: string;
   phone: string;
-
+  clinicId?: string;
   password: string;
 }
