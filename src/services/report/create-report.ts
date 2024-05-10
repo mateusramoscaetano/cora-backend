@@ -1,5 +1,5 @@
 import { ICreateReportRequestDto } from "../../dtos/report/icreate-report-request.dto";
-import { badRequest } from "../../helpers/errors-response";
+import { notFoundError } from "../../helpers/errors-response";
 import { findClinicById } from "../../repositories/clinic";
 import { findPetById } from "../../repositories/pet";
 import { findPetOwnerById } from "../../repositories/pet-owner";
@@ -12,18 +12,18 @@ export class CreateReportService {
     const petOwner = await findPetOwnerById(petOwnerId);
 
     if (!petOwner) {
-      return badRequest("pet owner");
+      return notFoundError("pet owner");
     }
 
     const pet = await findPetById(petId);
     if (!pet) {
-      return badRequest("pet");
+      return notFoundError("pet");
     }
 
     const clinic = await findClinicById(clinicId);
 
     if (!clinic) {
-      return badRequest("clinic");
+      return notFoundError("clinic");
     }
 
     const report = await createReport(data);
