@@ -10,17 +10,17 @@ export const createReport = tryCatch(
       petOwnerId: string;
     };
 
-    const { buffer, originalname, mimetype } =
+    const { originalname, mimetype, buffer } =
       request.file as Express.Multer.File;
 
     const createReportInstance = new CreateReportService();
     const createReport = await createReportInstance.createReportService({
-      buffer,
       clinicId,
       path: originalname,
       petId,
       petOwnerId,
       mimeType: mimetype,
+      buffer,
     });
     response.status(201).json(createReport);
   }

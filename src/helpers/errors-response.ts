@@ -8,3 +8,8 @@ export const unauthorized = () => {
   unauthorizedError.name = "UnauthorizedError";
   throw unauthorizedError;
 };
+export const notFoundError = (entity: string) => {
+  const notFound = new Error(`${entity} not found`);
+  notFound.name = "NotFoundError";
+  throw notFound;
+};

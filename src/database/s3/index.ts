@@ -1,4 +1,8 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 import {
   endpoint,
@@ -35,4 +39,19 @@ export const putObject = async (
   }
 
   return { message: "upload success" };
+};
+
+export const getObject = async (path: string) => {
+  const command = new GetObjectCommand({
+    Bucket: backblazeBucket,
+    Key: path,
+  });
+
+  try {
+    const { Body } = await s3.send(command);
+
+    return { Body, path };
+  } catch (err) {
+    console.error(err);
+  }
 };

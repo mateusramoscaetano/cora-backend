@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import tryCatch from "../../middlewares/try-catch";
 import { ICreatePetOwnerRequestDto } from "../../dtos/doctor/icreate-pet-owner-request.dto";
 import { CreatePetOwnerService } from "../../services/pet-owner/create-pet-owner";
-import { badRequest } from "../../helpers/errors-response";
+import { notFoundError } from "../../helpers/errors-response";
 
 export const createPetOwner = tryCatch(
   async (request: Request, response: Response) => {
@@ -23,7 +23,7 @@ export const createPetOwner = tryCatch(
     );
 
     if (!petOwner) {
-      return badRequest("pet owner");
+      return notFoundError("pet owner");
     }
 
     const { password: _, ...result } = petOwner;

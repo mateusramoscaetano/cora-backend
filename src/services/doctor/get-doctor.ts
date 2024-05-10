@@ -1,4 +1,4 @@
-import { badRequest } from "../../helpers/errors-response";
+import { notFoundError } from "../../helpers/errors-response";
 import { findDoctorById } from "../../repositories/doctor";
 
 export class GetDoctorService {
@@ -6,7 +6,7 @@ export class GetDoctorService {
     const doctor = await findDoctorById(id);
 
     if (!doctor) {
-      return badRequest("doctor");
+      return notFoundError("doctor");
     }
 
     return doctor;

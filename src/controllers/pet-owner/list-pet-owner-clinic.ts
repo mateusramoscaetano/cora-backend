@@ -5,9 +5,10 @@ import { ListPetOwnerClinicService } from "../../services/pet-owner/list-pet-own
 export const listPetOwnerByClinic = tryCatch(
   async (request: Request, response: Response) => {
     const { id } = request.params as { id: string };
+    const { page } = request.query as { page: string };
     const listPetOwnerByClinicInstance = new ListPetOwnerClinicService();
     const listPetOwnerByClinic =
-      await listPetOwnerByClinicInstance.listPetOwnerClinicService(id);
+      await listPetOwnerByClinicInstance.listPetOwnerClinicService(id, page);
     response.status(200).json(listPetOwnerByClinic);
   }
 );

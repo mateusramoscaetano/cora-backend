@@ -1,17 +1,17 @@
-import { connect } from "http2";
 import { ICreateReportRequestDto } from "../../dtos/report/icreate-report-request.dto";
 import { prisma } from "../../prisma";
 import { putObject } from "../../database/s3";
 import { findPetOwnerById } from "../pet-owner";
-import { badRequest } from "../../helpers/errors-response";
+import { notFoundError } from "../../helpers/errors-response";
+import { getObject } from "../test";
 
 export const createReport = async (data: ICreateReportRequestDto) => {
-  const { buffer, clinicId, petId, petOwnerId, mimeType, path } = data;
+  const { clinicId, petId, petOwnerId, mimeType, path, buffer } = data;
 
   const petOwner = await findPetOwnerById(petOwnerId);
 
   if (!petOwner) {
-    return badRequest("pet owner");
+    return notFoundError("pet owner");
   }
 
   const petOwnerName = petOwner.name.replace(" ", "_").toLowerCase();
@@ -27,6 +27,16 @@ export const createReport = async (data: ICreateReportRequestDto) => {
   });
 
   await putObject(mimeType, `${petOwnerName}/${path}`, buffer);
+
+  return report;
+};
+
+export const findReportById = async (id: string) => {
+  const report = await prisma.report.findUnique({ where: { id } });
+
+  if (!report) {
+    return null;
+  }
 
   return report;
 };

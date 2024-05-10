@@ -2,8 +2,6 @@ import { ICreateClinicRequestDto } from "../../dtos/clinic/icreate-clinic-reques
 import { prisma } from "../../prisma";
 
 export const createClinic = async (data: ICreateClinicRequestDto) => {
-  const { address, email, name, password, phone } = data;
-
   const clinic = await prisma.clinic.create({
     data: {
       ...data,
@@ -33,4 +31,17 @@ export const findClinicById = async (id: string) => {
   }
 
   return clinic;
+};
+
+export const listClinics = async (page: string) => {
+  const itemsPerPage = 10;
+  const pageAsNumber = parseInt(page, 10);
+  const skip = (pageAsNumber - 1) * itemsPerPage;
+
+  const totalClinics = await prisma.clinic.count();
+  const totalPages = Math.ceil(totalClinics / itemsPerPage);
+
+  const clinics = await prisma.clinic.findMany({ skip, take: itemsPerPage });
+
+  return { clinics, page: pageAsNumber, totalPages };
 };

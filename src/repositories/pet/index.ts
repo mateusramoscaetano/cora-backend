@@ -36,3 +36,34 @@ export const findPetById = async (id: string) => {
 
   return pet;
 };
+
+export const listPets = async (id: string) => {
+  const petOwner = await findPetOwnerById(id);
+
+  if (!petOwner) {
+    return null;
+  }
+
+  const pets = await prisma.pet.findMany({
+    where: { pet_owner_id: id },
+    select: { name: true, age: true, id: true },
+  });
+
+  return pets;
+};
+
+export const getPetDetail = async (id: string) => {
+  const pet = await prisma.pet.findUnique({
+    where: { id },
+    include: {
+      reports: { select: { path: true } },
+      pet_owner: { select: { name: true } },
+    },
+  });
+
+  if (!pet) {
+    return null;
+  }
+
+  return pet;
+};

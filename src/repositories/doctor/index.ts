@@ -31,10 +31,19 @@ export const findDoctorByEmail = async (email: string) => {
   return doctor;
 };
 
-export const listDoctors = async () => {
+export const listDoctors = async (page: string) => {
+  const itemsPerPage = 10;
+  const pageAsNumber = parseInt(page, 10);
+  const skip = (pageAsNumber - 1) * itemsPerPage;
+
+  const totalClinics = await prisma.clinic.count();
+  const totalPages = Math.ceil(totalClinics / itemsPerPage);
+
   const doctors = await prisma.doctor.findMany({
+    skip: skip,
+    take: itemsPerPage,
     select: { email: true, id: true, name: true, role: true },
   });
 
-  return doctors;
+  return { doctors, page: pageAsNumber, totalPages };
 };
