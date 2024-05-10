@@ -7,11 +7,11 @@ export const createPetOwner = async (
   data: ICreatePetOwnerRequestDto,
   doctorId: string
 ) => {
-  const { email, name, password, phone } = data;
+  const { email, name, password, phone, clinicId } = data;
 
-  const petOwner = await findPetOwnerByEmail(email);
+  const petOwnerExist = await findPetOwnerByEmail(email);
 
-  if (petOwner) {
+  if (petOwnerExist) {
     return badRequest("pet owner");
   }
 
@@ -21,22 +21,21 @@ export const createPetOwner = async (
     return badRequest("doctor");
   }
 
-  if (doctor) {
-    const petOwner = await prisma.petOwner.create({
-      data: {
-        email,
-        name,
-        password,
-        phone,
-        pets: { create: [] },
-        doctor: {
-          connect: { id: doctor.id },
-        },
+  const petOwner = await prisma.petOwner.create({
+    data: {
+      email,
+      name,
+      password,
+      phone,
+      pets: { create: [] },
+      doctor: {
+        connect: { id: doctor.id },
       },
-    });
+      clinic: { connect: { id: clinicId } },
+    },
+  });
 
-    return petOwner;
-  }
+  return petOwner;
 };
 
 export const findPetOwnerByEmail = async (email: string) => {
@@ -56,4 +55,20 @@ export const findPetOwnerById = async (id: string) => {
   }
 
   return petOwner;
+};
+
+export const listPetOwners = async () => {
+  const petOwners = await prisma.petOwner.findMany({
+    select: { id: true, name: true },
+  });
+
+  return petOwners;
+};
+export const listPetOwnersByClinic = async (id: string) => {
+  const petOwners = await prisma.petOwner.findMany({
+    select: { id: true, name: true },
+    where: { clinicId: id },
+  });
+
+  return petOwners;
 };
