@@ -5,7 +5,7 @@ import { createDoctor, findDoctorByEmail } from "../../repositories/doctor";
 
 export class CreateDoctorService {
   async createDoctor(data: ICreateDoctorRequestDto) {
-    const { email, name, password, phone } = data;
+    const { email, password } = data;
     const doctor = await findDoctorByEmail(email);
 
     if (doctor) {
@@ -15,10 +15,8 @@ export class CreateDoctorService {
     const hashedPassword = await hashPassword(password);
 
     const result = await createDoctor({
-      name,
+      ...data,
       password: hashedPassword,
-      phone,
-      email,
     });
 
     return result;
