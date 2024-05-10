@@ -1,7 +1,5 @@
 import { Request, Response } from "express";
 import tryCatch from "../../middlewares/try-catch";
-import { ICreateDoctorRequestDto } from "../../dtos/doctor/icreate-doctor-request.dto";
-import { CreateDoctorService } from "../../services/doctor/create-doctor";
 import { CreatePetService } from "../../services/pet/create-pet";
 import { ICreatePetRequestDto } from "../../dtos/pet/icreate-pet-request.dto";
 
