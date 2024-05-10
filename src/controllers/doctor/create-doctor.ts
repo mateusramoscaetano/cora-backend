@@ -16,6 +16,8 @@ export const createDoctor = tryCatch(
       phone,
     });
 
-    response.status(201).json(doctor);
+    const { password: _, ...result } = doctor;
+
+    response.status(201).json(result);
   }
 );
