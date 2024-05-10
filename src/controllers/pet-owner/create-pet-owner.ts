@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 import tryCatch from "../../middlewares/try-catch";
-import { ICreateDoctorRequestDto } from "../../dtos/doctor/icreate-doctor-request.dto";
-import { CreateDoctorService } from "../../services/doctor/create-doctor";
 import { ICreatePetOwnerRequestDto } from "../../dtos/doctor/icreate-pet-owner-request.dto";
 import { CreatePetOwnerService } from "../../services/pet-owner/create-pet-owner";
+import { badRequest } from "../../helpers/errors-response";
 
 export const createPetOwner = tryCatch(
   async (request: Request, response: Response) => {
@@ -22,6 +21,12 @@ export const createPetOwner = tryCatch(
       id
     );
 
-    response.status(201).json(petOwner);
+    if (!petOwner) {
+      return badRequest("pet owner");
+    }
+
+    const { password: _, ...result } = petOwner;
+
+    response.status(201).json(result);
   }
 );
