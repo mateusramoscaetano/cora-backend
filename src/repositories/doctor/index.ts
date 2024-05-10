@@ -1,9 +1,11 @@
 import { prisma } from "../../prisma";
 import { ICreateDoctorRequestDto } from "../../dtos/doctor/icreate-doctor-request.dto";
-import { badRequest } from "../../helpers/errors-response";
 
 export const findDoctorById = async (id: string) => {
-  const doctor = await prisma.doctor.findUnique({ where: { id } });
+  const doctor = await prisma.doctor.findUnique({
+    where: { id },
+    select: { email: true, id: true, name: true, phone: true, role: true },
+  });
 
   return doctor;
 };
@@ -27,4 +29,12 @@ export const findDoctorByEmail = async (email: string) => {
   }
 
   return doctor;
+};
+
+export const listDoctors = async () => {
+  const doctors = await prisma.doctor.findMany({
+    select: { email: true, id: true, name: true, role: true },
+  });
+
+  return doctors;
 };

@@ -5,6 +5,8 @@ import { validateZod } from "../middlewares/validation-zod";
 import { errorHandler } from "../middlewares/error-handler";
 import { loginDoctor } from "../controllers/doctor/login-doctor";
 import { LoginDoctorRequestDtoSchema } from "../zod-schemas/doctor/login-doctor.schema";
+import { listDoctors } from "../controllers/doctor/list-doctors";
+import { getDoctor } from "../controllers/doctor/geet-doctor";
 
 const doctorRoutes = Router();
 
@@ -18,6 +20,8 @@ doctorRoutes.post(
   validateZod(LoginDoctorRequestDtoSchema),
   loginDoctor
 );
+doctorRoutes.get("/doctor/list", listDoctors);
+doctorRoutes.get("/doctor/:id", getDoctor);
 
 doctorRoutes.use(errorHandler);
 
