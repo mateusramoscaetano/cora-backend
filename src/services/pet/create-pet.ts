@@ -1,5 +1,5 @@
 import { ICreatePetRequestDto } from "../../dtos/pet/icreate-pet-request.dto";
-import { createPet } from "../../repositories/pet/create-pet";
+import { createPet } from "../../repositories/pet";
 
 export class CreatePetService {
   async createPet(data: ICreatePetRequestDto, petOwnerId: string) {
