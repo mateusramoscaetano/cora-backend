@@ -5,6 +5,7 @@ import { doctorRoutes } from "../routes/doctor-routes";
 import { petOwnerRoutes } from "../routes/pet-owner-routes";
 import { petRoutes } from "../routes/pet-routes";
 import { clinicRoutes } from "../routes/clinic-routes";
+import { reportRoutes } from "../routes/report-routes";
 
 const app = express();
 
@@ -22,5 +23,6 @@ app.use(doctorRoutes);
 app.use(petOwnerRoutes);
 app.use(petRoutes);
 app.use(clinicRoutes);
+app.use(reportRoutes);
 
 export { app };

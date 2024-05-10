@@ -24,3 +24,13 @@ export const findClinicByEmail = async (email: string) => {
 
   return clinic;
 };
+
+export const findClinicById = async (id: string) => {
+  const clinic = await prisma.clinic.findUnique({ where: { id } });
+
+  if (!clinic) {
+    return null;
+  }
+
+  return clinic;
+};
