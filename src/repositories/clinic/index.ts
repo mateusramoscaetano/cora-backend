@@ -1,4 +1,5 @@
 import { ICreateClinicRequestDto } from "../../dtos/clinic/icreate-clinic-request.dto";
+import { IUpdateClinicRequestDto } from "../../dtos/clinic/iupdate-clinic-request.dto";
 import { prisma } from "../../prisma";
 
 export const createClinic = async (data: ICreateClinicRequestDto) => {
@@ -8,6 +9,17 @@ export const createClinic = async (data: ICreateClinicRequestDto) => {
       pet_owners: { create: [] },
       Report: { create: [] },
     },
+  });
+
+  return clinic;
+};
+export const updateClinic = async (
+  data: IUpdateClinicRequestDto,
+  id: string
+) => {
+  const clinic = await prisma.clinic.update({
+    data,
+    where: { id },
   });
 
   return clinic;
