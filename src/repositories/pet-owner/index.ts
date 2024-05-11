@@ -1,4 +1,11 @@
-import { ICreatePetOwnerRequestDto } from "../../dtos/doctor/icreate-pet-owner-request.dto";
+import {
+  CreatePetOwnerData,
+  ICreatePetOwnerRequestDto,
+} from "../../dtos/pet-owner/icreate-pet-owner-request.dto";
+import {
+  IUpdatePetOwnerRequestDto,
+  UpdatePetOwnerData,
+} from "../../dtos/pet-owner/iupdate-pet-owner-request.dto";
 import { badRequest, notFoundError } from "../../helpers/errors-response";
 import { prisma } from "../../prisma";
 import { findDoctorById } from "../doctor";
@@ -21,18 +28,54 @@ export const createPetOwner = async (
     return notFoundError("doctor");
   }
 
-  const petOwner = await prisma.petOwner.create({
-    data: {
-      email,
-      name,
-      password,
-      phone,
-      pets: { create: [] },
-      doctor: {
-        connect: { id: doctor.id },
-      },
-      clinic: { connect: { id: clinicId } },
+  const createData: CreatePetOwnerData = {
+    email,
+    name,
+    password,
+    phone,
+    doctor: {
+      connect: { id: doctor.id },
     },
+  };
+
+  if (clinicId) {
+    createData.clinic = { connect: { id: clinicId } };
+  }
+
+  const petOwner = await prisma.petOwner.create({ data: createData });
+
+  return petOwner;
+};
+export const updateClinicPetOwner = async (
+  data: IUpdatePetOwnerRequestDto,
+  doctorId: string,
+  id: string
+) => {
+  const { email, name, password, phone, clinicId } = data;
+
+  const doctor = await findDoctorById(doctorId);
+
+  if (!doctor) {
+    return notFoundError("doctor");
+  }
+
+  const updateData: UpdatePetOwnerData = {
+    email,
+    name,
+    password,
+    phone,
+    doctor: {
+      connect: { id: doctor.id },
+    },
+  };
+
+  if (clinicId) {
+    updateData.clinic = { connect: { id: clinicId } };
+  }
+
+  const petOwner = await prisma.petOwner.update({
+    data: updateData,
+    where: { id },
   });
 
   return petOwner;
