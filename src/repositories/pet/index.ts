@@ -56,7 +56,7 @@ export const getPetDetail = async (id: string) => {
   const pet = await prisma.pet.findUnique({
     where: { id },
     include: {
-      reports: { select: { path: true } },
+      reports: { select: { id: true, url: true } },
       pet_owner: { select: { name: true } },
     },
   });
