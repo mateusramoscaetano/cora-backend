@@ -1,4 +1,4 @@
-import { ICreatePetOwnerRequestDto } from "../../dtos/doctor/icreate-pet-owner-request.dto";
+import { ICreatePetOwnerRequestDto } from "../../dtos/pet-owner/icreate-pet-owner-request.dto";
 
 import { hashPassword } from "../../helpers/hash-password";
 
