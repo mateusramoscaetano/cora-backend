@@ -9,7 +9,7 @@ import {
 
 export class UpdateClinicService {
   async updateClinicService(data: IUpdateClinicRequestDto, id: string) {
-    const { address, email, name, password, phone } = data;
+    const { email, password } = data;
 
     const clinic = await findClinicById(id);
 
@@ -32,13 +32,7 @@ export class UpdateClinicService {
     }
 
     const result = await updateClinic(
-      {
-        address,
-        email,
-        name,
-        password: hashedPassword,
-        phone,
-      },
+      { ...data, password: hashedPassword },
       id
     );
 
