@@ -1,5 +1,6 @@
 import { ICreatePetRequestDto } from "../../dtos/pet/icreate-pet-request.dto";
-import { badRequest } from "../../helpers/errors-response";
+import { IUpdatePetRequestDto } from "../../dtos/pet/iupdate-pet-request.dto";
+import { badRequest, notFoundError } from "../../helpers/errors-response";
 import { prisma } from "../../prisma";
 import { findPetOwnerById } from "../pet-owner";
 
@@ -22,6 +23,19 @@ export const createPet = async (
       pet_owner: { connect: { id: petOwnerId } },
       reports: { create: [] },
     },
+  });
+
+  return pet;
+};
+export const updatePet = async (data: IUpdatePetRequestDto, id: string) => {
+  const { age, name } = data;
+
+  const pet = await prisma.pet.update({
+    data: {
+      age,
+      name,
+    },
+    where: { id },
   });
 
   return pet;
