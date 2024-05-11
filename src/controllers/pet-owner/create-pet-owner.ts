@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import tryCatch from "../../middlewares/try-catch";
-import { ICreatePetOwnerRequestDto } from "../../dtos/doctor/icreate-pet-owner-request.dto";
+import { ICreatePetOwnerRequestDto } from "../../dtos/pet-owner/icreate-pet-owner-request.dto";
 import { CreatePetOwnerService } from "../../services/pet-owner/create-pet-owner";
 import { notFoundError } from "../../helpers/errors-response";
 
