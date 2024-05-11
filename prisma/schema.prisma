@@ -22,7 +22,7 @@ model Doctor {
   password   String
   pet_owners PetOwner[]
   createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt()
 }
 
 model PetOwner {
@@ -35,7 +35,7 @@ model PetOwner {
 
   reports   Report[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 
   doctor   Doctor  @relation(fields: [doctorId], references: [id])
   doctorId String  @db.ObjectId
@@ -55,7 +55,7 @@ model Clinic {
   pet_owners PetOwner[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
   Report    Report[]
 }
 
@@ -65,7 +65,7 @@ model Pet {
   age       String
   reports   Report[]
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 
   pet_owner    PetOwner @relation(fields: [pet_owner_id], references: [id])
   pet_owner_id String   @db.ObjectId
@@ -76,7 +76,7 @@ model Report {
   url       String
   path      String
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 
   pet          Pet      @relation(fields: [pet_id], references: [id])
   pet_owner    PetOwner @relation(fields: [pet_owner_id], references: [id])
