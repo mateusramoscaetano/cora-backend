@@ -7,6 +7,8 @@ import { loginDoctor } from "../controllers/doctor/login-doctor";
 import { LoginDoctorRequestDtoSchema } from "../zod-schemas/doctor/login-doctor.schema";
 import { listDoctors } from "../controllers/doctor/list-doctors";
 import { getDoctor } from "../controllers/doctor/geet-doctor";
+import { validateZodParams } from "../middlewares/validation-zod-params";
+import { idParamsSchema } from "../zod-schemas/id-schema";
 
 const doctorRoutes = Router();
 
@@ -21,7 +23,7 @@ doctorRoutes.post(
   loginDoctor
 );
 doctorRoutes.get("/doctor/list", listDoctors);
-doctorRoutes.get("/doctor/:id", getDoctor);
+doctorRoutes.get("/doctor/:id", validateZodParams(idParamsSchema), getDoctor);
 
 doctorRoutes.use(errorHandler);
 

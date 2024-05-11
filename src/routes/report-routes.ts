@@ -5,6 +5,7 @@ import { createReport } from "../controllers/report/create-report";
 import { CreateReportParamsSchema } from "../zod-schemas/report/create-report-params.schema";
 import { validateZodParams } from "../middlewares/validation-zod-params";
 import { getReportUrl } from "../controllers/report/get-report-url";
+import { idParamsSchema } from "../zod-schemas/id-schema";
 
 const reportRoutes = Router();
 
@@ -14,7 +15,11 @@ reportRoutes.post(
   validateZodParams(CreateReportParamsSchema),
   createReport
 );
-reportRoutes.get("/report/:id", getReportUrl);
+reportRoutes.get(
+  "/report/:id",
+  validateZodParams(idParamsSchema),
+  getReportUrl
+);
 
 reportRoutes.use(errorHandler);
 
