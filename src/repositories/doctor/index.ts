@@ -4,7 +4,6 @@ import { ICreateDoctorRequestDto } from "../../dtos/doctor/icreate-doctor-reques
 export const findDoctorById = async (id: string) => {
   const doctor = await prisma.doctor.findUnique({
     where: { id },
-    select: { email: true, id: true, name: true, phone: true, role: true },
   });
 
   return doctor;
