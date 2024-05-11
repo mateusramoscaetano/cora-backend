@@ -1,10 +1,15 @@
 import { prisma } from "../../prisma";
 import { ICreateDoctorRequestDto } from "../../dtos/doctor/icreate-doctor-request.dto";
+import { IUpdateDoctorRequestDto } from "../../dtos/doctor/iupdate-doctor-request.dto";
 
 export const findDoctorById = async (id: string) => {
   const doctor = await prisma.doctor.findUnique({
     where: { id },
   });
+
+  if (!doctor) {
+    return null;
+  }
 
   return doctor;
 };
@@ -16,6 +21,14 @@ export const createDoctor = async (data: ICreateDoctorRequestDto) => {
       pet_owners: { create: [] },
     },
   });
+
+  return doctor;
+};
+export const updateDoctor = async (
+  data: IUpdateDoctorRequestDto,
+  id: string
+) => {
+  const doctor = await prisma.doctor.update({ data, where: { id } });
 
   return doctor;
 };
