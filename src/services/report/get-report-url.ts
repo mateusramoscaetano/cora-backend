@@ -1,4 +1,3 @@
-import { backblazeURL } from "../../database/constants";
 import { notFoundError } from "../../helpers/errors-response";
 import { findReportById } from "../../repositories/report";
 
@@ -9,9 +8,8 @@ export class GetReportUrlService {
     if (!report) {
       return notFoundError("report");
     }
+    const { id: reportId, url } = report;
 
-    const url = backblazeURL.concat(report.path);
-
-    return url;
+    return { reportId, url };
   }
 }
