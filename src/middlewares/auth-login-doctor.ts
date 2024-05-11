@@ -26,11 +26,7 @@ export const authLogin = async (
       return response.status(401).json({ message: "Unauthorized" });
     }
 
-    if (
-      userExist.role !== "adm" &&
-      userExist.role !== "user" &&
-      userExist.role !== "clinic"
-    ) {
+    if (userExist.role !== "adm" && userExist.role !== "user") {
       return response.status(401).json({ message: "Unauthorized" });
     }
 
