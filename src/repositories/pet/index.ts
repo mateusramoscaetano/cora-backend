@@ -1,3 +1,4 @@
+import { deleteObject } from "../../database/s3";
 import { ICreatePetRequestDto } from "../../dtos/pet/icreate-pet-request.dto";
 import { IUpdatePetRequestDto } from "../../dtos/pet/iupdate-pet-request.dto";
 import { badRequest, notFoundError } from "../../helpers/errors-response";
@@ -80,4 +81,30 @@ export const getPetDetail = async (id: string) => {
   }
 
   return pet;
+};
+
+export const deletePet = async (id: string) => {
+  const pet = await prisma.pet.findUnique({
+    where: { id },
+    include: { reports: true },
+  });
+
+  if (!pet) {
+    return notFoundError("pet");
+  }
+
+  const petOwner = await findPetOwnerById(pet.pet_owner_id);
+
+  if (!petOwner) {
+    return notFoundError("pet-owner");
+  }
+
+  await deleteObject(
+    petOwner.name.replace(" ", "_").toLowerCase().concat(pet.name.toLowerCase())
+  );
+
+  await prisma.report.deleteMany({ where: { pet_id: id } });
+
+  await prisma.pet.delete({ where: { id } });
+  return { message: "successfully deleted" };
 };

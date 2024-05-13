@@ -1,16 +1,23 @@
 import { ICreateReportRequestDto } from "../../dtos/report/icreate-report-request.dto";
 import { prisma } from "../../prisma";
-import { putObject } from "../../database/s3";
+import { deleteObject, putObject } from "../../database/s3";
 import { findPetOwnerById } from "../pet-owner";
 import { notFoundError } from "../../helpers/errors-response";
 
 import { randomUUID } from "node:crypto";
 import { backblazeURL } from "../../database/constants";
+import { uid } from "../../lib/short-uid";
 
 export const createReport = async (data: ICreateReportRequestDto) => {
-  const { clinicId, petId, petOwnerId, mimeType, path, buffer } = data;
+  const { petId, mimeType, path, buffer } = data;
 
-  const petOwner = await findPetOwnerById(petOwnerId);
+  const pet = await prisma.pet.findUnique({ where: { id: petId } });
+
+  if (!pet) {
+    return notFoundError("pet");
+  }
+
+  const petOwner = await findPetOwnerById(pet.pet_owner_id);
 
   if (!petOwner) {
     return notFoundError("pet owner");
@@ -19,15 +26,11 @@ export const createReport = async (data: ICreateReportRequestDto) => {
   const petOwnerName = petOwner.name.replace(" ", "_").toLowerCase();
   const pathUUID = randomUUID().concat("-").concat(petOwnerName).concat(path);
 
-  console.log(pathUUID);
-
   const report = await prisma.report.create({
     data: {
       url: petOwnerName,
-      path: `${petOwnerName}/${pathUUID}`,
+      path: `${petOwnerName}/${pet.name.toLocaleLowerCase()}/${pathUUID}`,
       pet: { connect: { id: petId } },
-      pet_owner: { connect: { id: petOwnerId } },
-      clinic: { connect: { id: clinicId } },
     },
   });
 
@@ -36,7 +39,7 @@ export const createReport = async (data: ICreateReportRequestDto) => {
     data: { url: backblazeURL.concat(report.path) },
   });
 
-  await putObject(mimeType, `${petOwnerName}/${pathUUID}`, buffer);
+  await putObject(mimeType, report.path, buffer);
 
   return report;
 };
@@ -49,4 +52,17 @@ export const findReportById = async (id: string) => {
   }
 
   return report;
+};
+
+export const deleteReport = async (id: string) => {
+  const report = await findReportById(id);
+
+  if (!report) {
+    return null;
+  }
+
+  await deleteObject(report.path);
+
+  await prisma.report.delete({ where: { id } });
+  return { message: "successfully deleted" };
 };

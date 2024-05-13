@@ -8,6 +8,10 @@ import { validateZodParams } from "../middlewares/validation-zod-params";
 import { idParamsSchema } from "../zod-schemas/id-schema";
 import { updateClinic } from "../controllers/clinic/update-clinic";
 import { UpdateClinicRequestDtoSchema } from "../zod-schemas/clinic/update-clinic.schema";
+import { getClinic } from "../controllers/clinic/get-clinic";
+import { loginClinic } from "../controllers/clinic/login-clinic";
+import { LoginClinicRequestDtoSchema } from "../zod-schemas/clinic/login-clinic.schema";
+import { deleteClinic } from "../controllers/clinic/delete-clinic";
 
 const clinicRoutes = Router();
 
@@ -24,6 +28,18 @@ clinicRoutes.put(
   updateClinic
 );
 clinicRoutes.get("/clinic/list", listClinics);
+clinicRoutes.get("/clinic/:id", validateZodParams(idParamsSchema), getClinic);
+clinicRoutes.post(
+  "/clinic/login",
+  validateZod(LoginClinicRequestDtoSchema),
+  loginClinic
+);
+
+clinicRoutes.delete(
+  "/clinic/:id",
+  validateZodParams(idParamsSchema),
+  deleteClinic
+);
 
 clinicRoutes.use(errorHandler);
 

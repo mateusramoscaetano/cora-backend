@@ -7,23 +7,11 @@ import { createReport } from "../../repositories/report";
 
 export class CreateReportService {
   async createReportService(data: ICreateReportRequestDto) {
-    const { clinicId, petId, petOwnerId } = data;
-
-    const petOwner = await findPetOwnerById(petOwnerId);
-
-    if (!petOwner) {
-      return notFoundError("pet owner");
-    }
+    const { petId } = data;
 
     const pet = await findPetById(petId);
     if (!pet) {
       return notFoundError("pet");
-    }
-
-    const clinic = await findClinicById(clinicId);
-
-    if (!clinic) {
-      return notFoundError("clinic");
     }
 
     const report = await createReport(data);

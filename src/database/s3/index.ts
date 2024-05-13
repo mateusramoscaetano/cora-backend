@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -51,6 +52,20 @@ export const getObject = async (path: string) => {
     const { Body } = await s3.send(command);
 
     return { Body, path };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const deleteObject = async (path?: string) => {
+  const command = new DeleteObjectCommand({
+    Bucket: backblazeBucket,
+    Key: path,
+  });
+
+  try {
+    const response = await s3.send(command);
+    console.log(response);
   } catch (err) {
     console.error(err);
   }

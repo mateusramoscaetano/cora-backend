@@ -7,7 +7,6 @@ export const createClinic = async (data: ICreateClinicRequestDto) => {
     data: {
       ...data,
       pet_owners: { create: [] },
-      Report: { create: [] },
     },
   });
 
@@ -56,4 +55,11 @@ export const listClinics = async (page: string) => {
   const clinics = await prisma.clinic.findMany({ skip, take: itemsPerPage });
 
   return { clinics, page: pageAsNumber, totalPages };
+};
+
+export const deleteClinic = async (id: string) => {
+  await prisma.clinic.delete({
+    where: { id },
+  });
+  return { message: "successfully deleted" };
 };

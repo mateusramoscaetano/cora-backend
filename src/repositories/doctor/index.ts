@@ -48,8 +48,8 @@ export const listDoctors = async (page: string) => {
   const pageAsNumber = parseInt(page, 10);
   const skip = (pageAsNumber - 1) * itemsPerPage;
 
-  const totalClinics = await prisma.clinic.count();
-  const totalPages = Math.ceil(totalClinics / itemsPerPage);
+  const totalDoctors = await prisma.doctor.count();
+  const totalPages = Math.ceil(totalDoctors / itemsPerPage);
 
   const doctors = await prisma.doctor.findMany({
     skip: skip,
@@ -58,4 +58,10 @@ export const listDoctors = async (page: string) => {
   });
 
   return { doctors, page: pageAsNumber, totalPages };
+};
+
+export const deleteDoctor = async (id: string) => {
+  await prisma.doctor.delete({ where: { id } });
+
+  return { message: "successfully deleted" };
 };

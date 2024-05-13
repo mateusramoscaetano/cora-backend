@@ -6,11 +6,12 @@ import { CreateReportParamsSchema } from "../zod-schemas/report/create-report-pa
 import { validateZodParams } from "../middlewares/validation-zod-params";
 import { getReportUrl } from "../controllers/report/get-report-url";
 import { idParamsSchema } from "../zod-schemas/id-schema";
+import { deleteReport } from "../controllers/report/delete-report";
 
 const reportRoutes = Router();
 
 reportRoutes.post(
-  "/report/create/:clinicId/:petId/:petOwnerId",
+  "/report/create/:petId",
   upload.single("file"),
   validateZodParams(CreateReportParamsSchema),
   createReport
@@ -19,6 +20,11 @@ reportRoutes.get(
   "/report/:id",
   validateZodParams(idParamsSchema),
   getReportUrl
+);
+reportRoutes.delete(
+  "/report/:id",
+  validateZodParams(idParamsSchema),
+  deleteReport
 );
 
 reportRoutes.use(errorHandler);

@@ -9,6 +9,8 @@ export class GetDoctorService {
       return notFoundError("doctor");
     }
 
-    return doctor;
+    const { password: _, ...response } = doctor;
+
+    return response;
   }
 }

@@ -19,7 +19,7 @@ export const createPetOwner = async (
   const petOwnerExist = await findPetOwnerByEmail(email);
 
   if (petOwnerExist) {
-    return badRequest("pet owner");
+    return badRequest("email");
   }
 
   const doctor = await findDoctorById(doctorId);
@@ -91,7 +91,10 @@ export const findPetOwnerByEmail = async (email: string) => {
   return petOwner;
 };
 export const findPetOwnerById = async (id: string) => {
-  const petOwner = await prisma.petOwner.findUnique({ where: { id } });
+  const petOwner = await prisma.petOwner.findUnique({
+    where: { id },
+    include: { pets: true },
+  });
 
   if (!petOwner) {
     return null;
@@ -147,4 +150,21 @@ export const getPetOwner = async (id: string) => {
   const { password: _, ...user } = petOwner;
 
   return user;
+};
+
+export const deletePetOwner = async (id: string) => {
+  const petOwner = await findPetOwnerById(id);
+
+  if (!petOwner) {
+    return notFoundError("pet owner");
+  }
+
+  for (let pet of petOwner.pets) {
+    await prisma.report.deleteMany({ where: { pet_id: pet.id } });
+  }
+
+  await prisma.pet.deleteMany({ where: { pet_owner_id: id } });
+
+  await prisma.petOwner.delete({ where: { id } });
+  return { message: "successfully deleted" };
 };

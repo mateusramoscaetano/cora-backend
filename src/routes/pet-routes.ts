@@ -10,6 +10,7 @@ import { validateZod } from "../middlewares/validation-zod";
 import { CreatePetRequestDtoSchema } from "../zod-schemas/pet/create-pet.schema";
 import { CreatePetParamsSchema } from "../zod-schemas/pet/create-report-params.schema";
 import { UpdatePetOwnerRequestDtoSchema } from "../zod-schemas/pet-owner/update-pet-owner.schema";
+import { deletePet } from "../controllers/pet/delete-pet";
 
 const petRoutes = Router();
 
@@ -27,6 +28,8 @@ petRoutes.put(
 );
 petRoutes.get("/pet/list/:id", validateZodParams(idParamsSchema), listPets);
 petRoutes.get("/pet/:id", validateZodParams(idParamsSchema), getPet);
+
+petRoutes.delete("/pet/:id", validateZodParams(idParamsSchema), deletePet);
 
 petRoutes.use(errorHandler);
 

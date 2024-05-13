@@ -25,24 +25,6 @@ model Doctor {
   updatedAt  DateTime   @updatedAt()
 }
 
-model PetOwner {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  pets     Pet[]
-  email    String @unique
-  password String
-  phone    String
-
-  reports   Report[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
-
-  doctor   Doctor  @relation(fields: [doctorId], references: [id])
-  doctorId String  @db.ObjectId
-  clinic   Clinic? @relation(fields: [clinicId], references: [id])
-  clinicId String? @db.ObjectId
-}
-
 model Clinic {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   name     String
@@ -56,7 +38,6 @@ model Clinic {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
-  Report    Report[]
 }
 
 model Pet {
@@ -78,10 +59,23 @@ model Report {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  pet          Pet      @relation(fields: [pet_id], references: [id])
-  pet_owner    PetOwner @relation(fields: [pet_owner_id], references: [id])
-  pet_owner_id String   @db.ObjectId
-  pet_id       String   @db.ObjectId
-  clinic       Clinic   @relation(fields: [clinicId], references: [id])
-  clinicId     String   @db.ObjectId
+  pet    Pet    @relation(fields: [pet_id], references: [id])
+  pet_id String @db.ObjectId
+}
+
+model PetOwner {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  pets     Pet[]
+  email    String @unique
+  password String
+  phone    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  doctor   Doctor? @relation(fields: [doctorId], references: [id])
+  doctorId String? @db.ObjectId
+  clinic   Clinic? @relation(fields: [clinicId], references: [id])
+  clinicId String? @db.ObjectId
 }

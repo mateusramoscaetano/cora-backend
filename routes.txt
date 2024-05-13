@@ -1,0 +1,18 @@
+clinic
+GET /clinic/:id ok ok
+POST /clinic/login ok
+DELETE /clinic/:id ok
+
+doctor
+DELETE /doctor/:id ok
+
+pet-owner
+POST /pet-owner/login ok 
+DELETE /pet-owner/:id ok
+
+pet
+DELETE /pet/:id ok ok
+
+report
+DELETE /report/:id ok ok
+

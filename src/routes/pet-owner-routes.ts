@@ -11,6 +11,8 @@ import { updatePetOwner } from "../controllers/pet-owner/update-pet-owner";
 import { validateZod } from "../middlewares/validation-zod";
 import { CreatePetOwnerRequestDtoSchema } from "../zod-schemas/pet-owner/create-pet-owner.schema";
 import { UpdatePetOwnerRequestDtoSchema } from "../zod-schemas/pet-owner/update-pet-owner.schema";
+import { loginPetOwner } from "../controllers/pet-owner/login-pet-owner";
+import { deletePetOwner } from "../controllers/pet-owner/delete-pet-owner";
 
 const petOwnerRoutes = Router();
 
@@ -38,6 +40,18 @@ petOwnerRoutes.get(
   "/pet-owner/:id",
   validateZodParams(idParamsSchema),
   getPetOwner
+);
+
+petOwnerRoutes.post(
+  "/pet-owner/login",
+  validateZodParams(idParamsSchema),
+  loginPetOwner
+);
+
+petOwnerRoutes.delete(
+  "/pet-owner/:id",
+  validateZodParams(idParamsSchema),
+  deletePetOwner
 );
 
 petOwnerRoutes.use(errorHandler);
