@@ -1,6 +1,8 @@
 import { prisma } from "../../prisma";
 import { ICreateDoctorRequestDto } from "../../dtos/doctor/icreate-doctor-request.dto";
 import { IUpdateDoctorRequestDto } from "../../dtos/doctor/iupdate-doctor-request.dto";
+import { Prisma } from "@prisma/client";
+const { QueryMode } = Prisma;
 
 export const findDoctorById = async (id: string) => {
   const doctor = await prisma.doctor.findUnique({
@@ -43,7 +45,7 @@ export const findDoctorByEmail = async (email: string) => {
   return doctor;
 };
 
-export const listDoctors = async (page: string) => {
+export const listDoctors = async (page: string, name?: string) => {
   const itemsPerPage = 10;
   const pageAsNumber = parseInt(page, 10);
   const skip = (pageAsNumber - 1) * itemsPerPage;
@@ -52,6 +54,7 @@ export const listDoctors = async (page: string) => {
   const totalPages = Math.ceil(totalDoctors / itemsPerPage);
 
   const doctors = await prisma.doctor.findMany({
+    where: { name: { contains: name, mode: QueryMode.insensitive } },
     skip: skip,
     take: itemsPerPage,
     select: { email: true, id: true, name: true, role: true },

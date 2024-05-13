@@ -4,12 +4,10 @@ import { ListClinicService } from "../../services/clinic/list-clinics";
 
 export const listClinics = tryCatch(
   async (request: Request, response: Response) => {
-    const { page } = request.query as { page: string };
-
-    console.log("page", page);
+    const { page, name } = request.query as { page: string; name?: string };
 
     const listClinicsInstance = new ListClinicService();
-    const listClinics = await listClinicsInstance.listClinicService(page);
+    const listClinics = await listClinicsInstance.listClinicService(page, name);
     response.status(201).json(listClinics);
   }
 );

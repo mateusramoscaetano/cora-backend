@@ -4,10 +4,18 @@ import { ListPetOwners } from "../../services/pet-owner/list-pet-owners";
 
 export const listPetOwners = tryCatch(
   async (request: Request, response: Response) => {
-    const { page } = request.query as { page: string };
+    const { page, doctorId, doctorName, petName } = request.query as {
+      page: string;
+      doctorId?: string;
+      doctorName: string;
+      petName: string;
+    };
 
     const listPetOwnersInstance = new ListPetOwners();
-    const listPetOwners = await listPetOwnersInstance.listPetOwners(page);
+
+    const options = { page, doctorId, doctorName, petName };
+
+    const listPetOwners = await listPetOwnersInstance.listPetOwners(options);
     response.status(200).json(listPetOwners);
   }
 );

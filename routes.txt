@@ -1,18 +1,40 @@
 clinic
-GET /clinic/:id ok ok
-POST /clinic/login ok
-DELETE /clinic/:id ok
+GET /clinic/:id 
+GET /clinic/list 
+POST /clinic/login 
+POST /clinic/create 
+PUT /clinic/:id
+DELETE /clinic/:id 
 
 doctor
-DELETE /doctor/:id ok
+GET /doctor/list
+GET /doctor/:id
+POST /doctor/create 
+POST /doctor/login 
+PUT /doctor/:id 
+DELETE /doctor/:id
 
 pet-owner
-POST /pet-owner/login ok 
-DELETE /pet-owner/:id ok
+GET /pet-owner/:id clinicID
+GET /pet-owner/:id 
+GET /pet-owner/list
+POST /pet-owner/login
+POST /pet-owner/create
+PUT /pet-owner/:id
+DELETE /pet-owner/:id 
 
 pet
-DELETE /pet/:id ok ok
+GET /pet/list/:id petOwnerID
+GET /pet/:id
+POST /pet/create
+PUT /pet/:id
+DELETE /pet/:id 
 
 report
-DELETE /report/:id ok ok
+POST /report/create/:petId
+GET /report/:id
+DELETE /report/:id 
+
+
+
 

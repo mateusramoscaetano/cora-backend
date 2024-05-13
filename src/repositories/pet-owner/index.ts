@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import {
   CreatePetOwnerData,
   ICreatePetOwnerRequestDto,
@@ -9,6 +10,9 @@ import {
 import { badRequest, notFoundError } from "../../helpers/errors-response";
 import { prisma } from "../../prisma";
 import { findDoctorById } from "../doctor";
+import { IListPetOwnersOptions } from "../../dtos/pet-owner/ilist-pet-owner-options.dto";
+
+const { QueryMode } = Prisma;
 
 export const createPetOwner = async (
   data: ICreatePetOwnerRequestDto,
@@ -103,22 +107,60 @@ export const findPetOwnerById = async (id: string) => {
   return petOwner;
 };
 
-export const listPetOwners = async (page: string) => {
+export const listPetOwners = async (options: IListPetOwnersOptions) => {
   const itemsPerPage = 10;
-  const pageAsNumber = parseInt(page, 10);
+  const pageAsNumber = parseInt(options.page, 10);
   const skip = (pageAsNumber - 1) * itemsPerPage;
 
-  const totalClinics = await prisma.clinic.count();
-  const totalPages = Math.ceil(totalClinics / itemsPerPage);
+  const totalOwners = await prisma.petOwner.count();
+  const totalPages = Math.ceil(totalOwners / itemsPerPage);
+
+  const where: Prisma.PetOwnerWhereInput = {};
+
+  if (options.doctorName) {
+    const doctors = await prisma.doctor.findMany({
+      where: {
+        name: {
+          contains: options.doctorName,
+          mode: QueryMode.insensitive,
+        },
+      },
+    });
+
+    const doctorIds = doctors.map((doctor) => doctor.id);
+
+    where.doctorId = {
+      in: doctorIds,
+    };
+  }
+
+  if (options.petName) {
+    where.pets = {
+      some: {
+        name: {
+          contains: options.petName,
+          mode: QueryMode.insensitive,
+        },
+      },
+    };
+  }
+
+  if (options.ownerName) {
+    where.name = {
+      contains: options.ownerName,
+      mode: QueryMode.insensitive,
+    };
+  }
 
   const petOwners = await prisma.petOwner.findMany({
+    where,
     skip,
     take: itemsPerPage,
-    select: { id: true, name: true },
   });
 
   return { petOwners, page: pageAsNumber, totalPages };
 };
+
 export const listPetOwnersByClinic = async (id: string, page: string) => {
   const itemsPerPage = 10;
   const pageAsNumber = parseInt(page, 10);

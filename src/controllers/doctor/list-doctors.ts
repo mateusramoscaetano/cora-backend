@@ -4,9 +4,12 @@ import { ListDoctorsService } from "../../services/doctor/list-doctors";
 
 export const listDoctors = tryCatch(
   async (request: Request, response: Response) => {
-    const { page } = request.query as { page: string };
+    const { page, name } = request.query as { page: string; name?: string };
     const listDoctorsInstance = new ListDoctorsService();
-    const listDoctors = await listDoctorsInstance.listDoctorsService(page);
+    const listDoctors = await listDoctorsInstance.listDoctorsService(
+      page,
+      name
+    );
     response.status(200).json(listDoctors);
   }
 );
