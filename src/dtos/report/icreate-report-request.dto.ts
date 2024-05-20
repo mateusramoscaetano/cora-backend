@@ -3,4 +3,5 @@ export interface ICreateReportRequestDto {
   mimeType?: string;
   path: string;
   buffer: Buffer;
+  clinicId: string;
 }

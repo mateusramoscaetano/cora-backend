@@ -42,11 +42,7 @@ petOwnerRoutes.get(
   getPetOwner
 );
 
-petOwnerRoutes.post(
-  "/pet-owner/login",
-  validateZodParams(idParamsSchema),
-  loginPetOwner
-);
+petOwnerRoutes.post("/pet-owner/login", loginPetOwner);
 
 petOwnerRoutes.delete(
   "/pet-owner/:id",

@@ -7,14 +7,22 @@ import { notFoundError } from "../../helpers/errors-response";
 import { randomUUID } from "node:crypto";
 import { backblazeURL } from "../../database/constants";
 import { uid } from "../../lib/short-uid";
+import { findPetById } from "../pet";
+import { connect } from "node:http2";
+import { findClinicById } from "../clinic";
 
 export const createReport = async (data: ICreateReportRequestDto) => {
-  const { petId, mimeType, path, buffer } = data;
+  const { petId, mimeType, path, buffer, clinicId } = data;
 
   const pet = await prisma.pet.findUnique({ where: { id: petId } });
 
   if (!pet) {
     return notFoundError("pet");
+  }
+  const clinic = await prisma.clinic.findUnique({ where: { id: clinicId } });
+
+  if (!clinic) {
+    return notFoundError("clinic");
   }
 
   const petOwner = await findPetOwnerById(pet.pet_owner_id);
@@ -31,6 +39,7 @@ export const createReport = async (data: ICreateReportRequestDto) => {
       url: petOwnerName,
       path: `${petOwnerName}/${pet.name.toLocaleLowerCase()}/${pathUUID}`,
       pet: { connect: { id: petId } },
+      Clinic: { connect: { id: clinicId } },
     },
   });
 
@@ -65,4 +74,27 @@ export const deleteReport = async (id: string) => {
 
   await prisma.report.delete({ where: { id } });
   return { message: "successfully deleted" };
+};
+
+export const listReports = async (id: string) => {
+  const pet = await findPetById(id);
+
+  if (!pet) {
+    return notFoundError("pet");
+  }
+
+  const { reports } = pet;
+
+  return reports;
+};
+export const listReportsByClinic = async (id: string) => {
+  const clinic = await findClinicById(id);
+
+  if (!clinic) {
+    return notFoundError("pet");
+  }
+
+  const { report } = clinic;
+
+  return report;
 };

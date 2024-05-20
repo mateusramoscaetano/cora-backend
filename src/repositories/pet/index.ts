@@ -43,7 +43,14 @@ export const updatePet = async (data: IUpdatePetRequestDto, id: string) => {
 };
 
 export const findPetById = async (id: string) => {
-  const pet = await prisma.pet.findUnique({ where: { id } });
+  const pet = await prisma.pet.findUnique({
+    where: { id },
+    include: {
+      reports: {
+        select: { id: true, url: true },
+      },
+    },
+  });
 
   if (!pet) {
     return null;

@@ -4,7 +4,7 @@ import { CreateReportService } from "../../services/report/create-report";
 
 export const createReport = tryCatch(
   async (request: Request, response: Response) => {
-    const { petId } = request.params as {
+    const { petId, clinicId } = request.params as {
       clinicId: string;
       petId: string;
     };
@@ -18,6 +18,7 @@ export const createReport = tryCatch(
       petId,
       mimeType: mimetype,
       buffer,
+      clinicId,
     });
     response.status(201).json(createReport);
   }

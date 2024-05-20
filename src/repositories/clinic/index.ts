@@ -8,7 +8,6 @@ export const createClinic = async (data: ICreateClinicRequestDto) => {
   const clinic = await prisma.clinic.create({
     data: {
       ...data,
-      pet_owners: { create: [] },
     },
   });
 
@@ -37,7 +36,10 @@ export const findClinicByEmail = async (email: string) => {
 };
 
 export const findClinicById = async (id: string) => {
-  const clinic = await prisma.clinic.findUnique({ where: { id } });
+  const clinic = await prisma.clinic.findUnique({
+    where: { id },
+    include: { report: true },
+  });
 
   if (!clinic) {
     return null;

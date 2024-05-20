@@ -34,10 +34,11 @@ model Clinic {
   address  String
   phone    String
 
-  pet_owners PetOwner[]
+  report Report[]
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt()
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt()
+  PetOwner  PetOwner[]
 }
 
 model Pet {
@@ -59,8 +60,10 @@ model Report {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt()
 
-  pet    Pet    @relation(fields: [pet_id], references: [id])
-  pet_id String @db.ObjectId
+  pet      Pet     @relation(fields: [pet_id], references: [id])
+  pet_id   String  @db.ObjectId
+  Clinic   Clinic? @relation(fields: [clinicId], references: [id])
+  clinicId String? @db.ObjectId
 }
 
 model PetOwner {
