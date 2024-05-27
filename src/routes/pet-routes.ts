@@ -11,6 +11,7 @@ import { CreatePetRequestDtoSchema } from "../zod-schemas/pet/create-pet.schema"
 import { CreatePetParamsSchema } from "../zod-schemas/pet/create-report-params.schema";
 import { UpdatePetOwnerRequestDtoSchema } from "../zod-schemas/pet-owner/update-pet-owner.schema";
 import { deletePet } from "../controllers/pet/delete-pet";
+import { listAllPetsController } from "../controllers/pet/list-all-pets";
 
 const petRoutes = Router();
 
@@ -26,6 +27,8 @@ petRoutes.put(
   validateZod(UpdatePetOwnerRequestDtoSchema),
   updatePet
 );
+petRoutes.get("/pet/list-all", listAllPetsController);
+
 petRoutes.get("/pet/list/:id", validateZodParams(idParamsSchema), listPets);
 petRoutes.get("/pet/:id", validateZodParams(idParamsSchema), getPet);
 

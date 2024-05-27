@@ -5,7 +5,7 @@ import { ICreatePetRequestDto } from "../../dtos/pet/icreate-pet-request.dto";
 
 export const createPet = tryCatch(
   async (request: Request, response: Response) => {
-    const { name, age } = request.body as ICreatePetRequestDto;
+    const { name, age, race, specie } = request.body as ICreatePetRequestDto;
     const { petOwnerId } = request.params as { petOwnerId: string };
 
     const createPetInstance = new CreatePetService();
@@ -13,6 +13,8 @@ export const createPet = tryCatch(
       {
         name,
         age,
+        race,
+        specie,
       },
       petOwnerId
     );
