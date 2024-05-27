@@ -1,15 +1,17 @@
+import { Prisma } from "@prisma/client";
 import { deleteObject } from "../../database/s3";
 import { ICreatePetRequestDto } from "../../dtos/pet/icreate-pet-request.dto";
 import { IUpdatePetRequestDto } from "../../dtos/pet/iupdate-pet-request.dto";
 import { badRequest, notFoundError } from "../../helpers/errors-response";
 import { prisma } from "../../prisma";
 import { findPetOwnerById } from "../pet-owner";
+const { QueryMode } = Prisma;
 
 export const createPet = async (
   data: ICreatePetRequestDto,
   petOwnerId: string
 ) => {
-  const { age, name } = data;
+  const { age, name, race, specie } = data;
 
   const petOwner = await findPetOwnerById(petOwnerId);
 
@@ -19,6 +21,8 @@ export const createPet = async (
 
   const pet = await prisma.pet.create({
     data: {
+      race,
+      specie,
       age,
       name,
       pet_owner: { connect: { id: petOwnerId } },
@@ -114,4 +118,26 @@ export const deletePet = async (id: string) => {
 
   await prisma.pet.delete({ where: { id } });
   return { message: "successfully deleted" };
+};
+
+export const listAllPets = async (page: string, searchTerm?: string) => {
+  const itemsPerPage = 10;
+  const pageAsNumber = parseInt(page, 10);
+  const skip = (pageAsNumber - 1) * itemsPerPage;
+
+  const totalPets = await prisma.pet.count();
+  const totalPages = Math.ceil(totalPets / itemsPerPage);
+
+  const pets = await prisma.pet.findMany({
+    where: { name: { contains: searchTerm, mode: QueryMode.insensitive } },
+    skip: skip,
+    take: itemsPerPage,
+    select: { id: true, name: true, pet_owner: { select: { name: true } } },
+  });
+
+  const organizeResponseToIdAndName = pets.map((pet) => {
+    return { petId: pet.id, name: `${pet.pet_owner.name} / ${pet.name}` };
+  });
+
+  return { pets: organizeResponseToIdAndName, page: pageAsNumber, totalPages };
 };
