@@ -117,11 +117,13 @@ export const listPetOwners = async (options: IListPetOwnersOptions) => {
 
   const where: Prisma.PetOwnerWhereInput = {};
 
-  if (options.doctorName) {
+  if (options.searchTerm) {
+    const searchTerm = options.searchTerm;
+
     const doctors = await prisma.doctor.findMany({
       where: {
         name: {
-          contains: options.doctorName,
+          contains: searchTerm,
           mode: QueryMode.insensitive,
         },
       },
@@ -129,33 +131,37 @@ export const listPetOwners = async (options: IListPetOwnersOptions) => {
 
     const doctorIds = doctors.map((doctor) => doctor.id);
 
-    where.doctorId = {
-      in: doctorIds,
-    };
-  }
-
-  if (options.petName) {
-    where.pets = {
-      some: {
+    where.OR = [
+      {
         name: {
-          contains: options.petName,
+          contains: searchTerm,
           mode: QueryMode.insensitive,
         },
       },
-    };
-  }
-
-  if (options.ownerName) {
-    where.name = {
-      contains: options.ownerName,
-      mode: QueryMode.insensitive,
-    };
+      {
+        pets: {
+          some: {
+            name: {
+              contains: searchTerm,
+              mode: QueryMode.insensitive,
+            },
+          },
+        },
+      },
+      {
+        doctorId: {
+          in: doctorIds,
+        },
+      },
+    ];
   }
 
   const petOwners = await prisma.petOwner.findMany({
     where,
     skip,
     take: itemsPerPage,
+    include: { pets: { select: { id: true } } },
+    orderBy: { createdAt: "desc" },
   });
 
   return { petOwners, page: pageAsNumber, totalPages };
