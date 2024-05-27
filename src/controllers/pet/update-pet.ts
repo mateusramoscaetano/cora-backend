@@ -5,13 +5,13 @@ import { IUpdatePetRequestDto } from "../../dtos/pet/iupdate-pet-request.dto";
 
 export const updatePet = tryCatch(
   async (request: Request, response: Response) => {
-    const { age, name } = request.body as IUpdatePetRequestDto;
+    const { age, name, race, specie } = request.body as IUpdatePetRequestDto;
     const { id } = request.params as { id: string };
 
     const updatePetInstance = new UpdatePetService();
 
     const updatePet = await updatePetInstance.UpdatePetService(
-      { age, name },
+      { age, name, race, specie },
       id
     );
     response.status(200).json(updatePet);

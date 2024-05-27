@@ -33,12 +33,14 @@ export const createPet = async (
   return pet;
 };
 export const updatePet = async (data: IUpdatePetRequestDto, id: string) => {
-  const { age, name } = data;
+  const { age, name, race, specie } = data;
 
   const pet = await prisma.pet.update({
     data: {
       age,
       name,
+      race,
+      specie,
     },
     where: { id },
   });
