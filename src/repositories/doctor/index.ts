@@ -68,3 +68,28 @@ export const deleteDoctor = async (id: string) => {
 
   return { message: "successfully deleted" };
 };
+
+export const getUserLoggedData = async (id: string) => {
+  const response = await prisma.doctor.findUnique({
+    where: { id },
+    select: { id: true, name: true, email: true, role: true, phone: true },
+  });
+
+  if (!response) {
+    const clinic = await prisma.clinic.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        phone: true,
+        address: true,
+      },
+    });
+
+    return clinic;
+  }
+
+  return response;
+};
