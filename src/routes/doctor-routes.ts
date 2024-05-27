@@ -12,6 +12,8 @@ import { idParamsSchema } from "../zod-schemas/id-schema";
 import { updateDoctor } from "../controllers/doctor/update-doctor";
 import { UpdateDoctorRequestDtoSchema } from "../zod-schemas/doctor/update-doctor.schema";
 import { deleteDoctor } from "../controllers/doctor/delete-doctor";
+import { getUserLogged } from "../controllers/doctor/get-user-logged";
+import { authLogin } from "../middlewares/auth-login";
 
 const doctorRoutes = Router();
 
@@ -28,7 +30,7 @@ doctorRoutes.put(
 );
 
 doctorRoutes.post(
-  "/doctor/login",
+  "/auth/login",
   validateZod(LoginDoctorRequestDtoSchema),
   loginDoctor
 );
@@ -40,6 +42,8 @@ doctorRoutes.delete(
   validateZodParams(idParamsSchema),
   deleteDoctor
 );
+
+doctorRoutes.get("/me", authLogin, getUserLogged);
 
 doctorRoutes.use(errorHandler);
 
