@@ -9,6 +9,7 @@ import { idParamsSchema } from "../zod-schemas/id-schema";
 import { deleteReport } from "../controllers/report/delete-report";
 import { listReports } from "../controllers/report/list-reports";
 import { listReportsByClinicController } from "../controllers/report/list-reeport-by-clinic-id";
+import { listAllReportsController } from "../controllers/report/list-all-reports";
 
 const reportRoutes = Router();
 
@@ -18,6 +19,8 @@ reportRoutes.post(
   validateZodParams(CreateReportParamsSchema),
   createReport
 );
+reportRoutes.get("/reports/list-all", listAllReportsController);
+
 reportRoutes.get(
   "/report/:id",
   validateZodParams(idParamsSchema),
@@ -28,6 +31,7 @@ reportRoutes.get(
   validateZodParams(idParamsSchema),
   listReports
 );
+
 reportRoutes.get(
   "/report/list-by-clinic/:id",
   validateZodParams(idParamsSchema),
