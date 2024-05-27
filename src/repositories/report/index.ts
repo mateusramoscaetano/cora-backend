@@ -3,13 +3,16 @@ import { prisma } from "../../prisma";
 import { deleteObject, putObject } from "../../database/s3";
 import { findPetOwnerById } from "../pet-owner";
 import { notFoundError } from "../../helpers/errors-response";
-
+import { Prisma } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { backblazeURL } from "../../database/constants";
 import { uid } from "../../lib/short-uid";
 import { findPetById } from "../pet";
 import { connect } from "node:http2";
 import { findClinicById } from "../clinic";
+import { report } from "node:process";
+
+const { QueryMode } = Prisma;
 
 export const createReport = async (data: ICreateReportRequestDto) => {
   const { petId, mimeType, path, buffer, clinicId } = data;
@@ -86,6 +89,79 @@ export const listReports = async (id: string) => {
   const { reports } = pet;
 
   return reports;
+};
+export interface IListAllReportsOptions {
+  page: string;
+  searchTerm?: string;
+}
+
+export const listAllReports = async (options: IListAllReportsOptions) => {
+  const itemsPerPage = 10;
+  const pageAsNumber = parseInt(options.page, 10);
+  const skip = (pageAsNumber - 1) * itemsPerPage;
+
+  const where: Prisma.ReportWhereInput = {};
+
+  if (options.searchTerm) {
+    const searchTerm = options.searchTerm;
+
+    where.OR = [
+      {
+        pet: {
+          pet_owner: {
+            name: {
+              contains: searchTerm,
+              mode: QueryMode.insensitive,
+            },
+          },
+        },
+      },
+      {
+        pet: {
+          name: {
+            contains: searchTerm,
+            mode: QueryMode.insensitive,
+          },
+        },
+      },
+      {
+        pet: {
+          pet_owner: {
+            doctor: {
+              name: {
+                contains: searchTerm,
+                mode: QueryMode.insensitive,
+              },
+            },
+          },
+        },
+      },
+    ];
+  }
+
+  const reports = await prisma.report.findMany({
+    where,
+    select: {
+      id: true,
+      url: true,
+      pet: {
+        select: {
+          pet_owner: {
+            select: { name: true, doctor: { select: { name: true } } },
+          },
+          name: true,
+        },
+      },
+      createdAt: true,
+    },
+    skip,
+    take: itemsPerPage,
+  });
+
+  const totalReports = await prisma.report.count({ where });
+  const totalPages = Math.ceil(totalReports / itemsPerPage);
+
+  return { reports, page: pageAsNumber, totalPages };
 };
 export const listReportsByClinic = async (id: string) => {
   const clinic = await findClinicById(id);
