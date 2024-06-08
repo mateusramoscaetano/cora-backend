@@ -12,6 +12,8 @@ import { getClinic } from "../controllers/clinic/get-clinic";
 import { loginClinic } from "../controllers/clinic/login-clinic";
 import { LoginClinicRequestDtoSchema } from "../zod-schemas/clinic/login-clinic.schema";
 import { deleteClinic } from "../controllers/clinic/delete-clinic";
+import { clinicDetail } from "../repositories/clinic";
+import { clinicDetailController } from "../controllers/clinic/clinic-detail";
 
 const clinicRoutes = Router();
 
@@ -28,7 +30,15 @@ clinicRoutes.put(
   updateClinic
 );
 clinicRoutes.get("/clinic/list", listClinics);
+
 clinicRoutes.get("/clinic/:id", validateZodParams(idParamsSchema), getClinic);
+
+clinicRoutes.get(
+  "/clinic/:id/detail",
+  validateZodParams(idParamsSchema),
+  clinicDetailController
+);
+
 clinicRoutes.post(
   "/clinic/login",
   validateZod(LoginClinicRequestDtoSchema),

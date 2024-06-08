@@ -10,6 +10,7 @@ import { deleteReport } from "../controllers/report/delete-report";
 import { listReports } from "../controllers/report/list-reports";
 import { listReportsByClinicController } from "../controllers/report/list-reeport-by-clinic-id";
 import { listAllReportsController } from "../controllers/report/list-all-reports";
+import { authLogin } from "../middlewares/auth-login";
 
 const reportRoutes = Router();
 

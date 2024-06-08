@@ -7,4 +7,8 @@ export const CreatePetRequestDtoSchema = z.object({
   age: z
     .string({ required_error: "Password is required" })
     .min(1, "Password must be at least 5 characters long"),
+  race: z
+    .string({ required_error: "Password is required" })
+    .min(1, "Race must be at least 5 characters long"),
+  specie: z.enum(["Gato", "Cachorro"]),
 });

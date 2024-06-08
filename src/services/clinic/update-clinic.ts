@@ -25,19 +25,19 @@ export class UpdateClinicService {
       }
     }
 
-    let hashedPassword = "";
+    const updateData = { ...data };
 
     if (password) {
-      hashedPassword = await hashPassword(password);
+      const hashedPassword = await hashPassword(password);
+      updateData.password = hashedPassword;
+    } else {
+      delete updateData.password;
     }
 
-    const result = await updateClinic(
-      { ...data, password: hashedPassword },
-      id
-    );
+    const result = await updateClinic(updateData, id);
 
-    const { password: _, ...createdUser } = result;
+    const { password: _, ...updatedClinic } = result;
 
-    return createdUser;
+    return updatedClinic;
   }
 }

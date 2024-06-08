@@ -58,6 +58,7 @@ export const listDoctors = async (page: string, name?: string) => {
     skip: skip,
     take: itemsPerPage,
     select: { email: true, id: true, name: true, role: true },
+    orderBy: { createdAt: "desc" },
   });
 
   return { doctors, page: pageAsNumber, totalPages };

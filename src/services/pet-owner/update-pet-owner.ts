@@ -30,17 +30,16 @@ export class UpdatePetOwnerService {
       }
     }
 
-    let hashedPassword = "";
+    const updateData = { ...data };
 
     if (password) {
-      hashedPassword = await hashPassword(password);
+      const hashedPassword = await hashPassword(password);
+      updateData.password = hashedPassword;
+    } else {
+      delete updateData.password;
     }
 
-    const result = await updateClinicPetOwner(
-      { ...data, password: hashedPassword },
-      doctorId,
-      id
-    );
+    const result = await updateClinicPetOwner(updateData, doctorId, id);
 
     const { password: _, ...createdUser } = result;
 

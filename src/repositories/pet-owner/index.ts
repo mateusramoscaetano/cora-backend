@@ -74,6 +74,14 @@ export const updateClinicPetOwner = async (
   };
 
   if (clinicId) {
+    const clinicExist = await prisma.clinic.findUnique({
+      where: { id: clinicId },
+    });
+
+    if (!clinicExist) {
+      return notFoundError("clinic");
+    }
+
     updateData.clinic = { connect: { id: clinicId } };
   }
 
@@ -188,16 +196,14 @@ export const listPetOwnersByClinic = async (id: string, page: string) => {
 export const getPetOwner = async (id: string) => {
   const petOwner = await prisma.petOwner.findUnique({
     where: { id },
-    include: { pets: true },
+    include: { pets: { select: { id: true, name: true } } },
   });
 
   if (!petOwner) {
     return null;
   }
 
-  const { password: _, ...user } = petOwner;
-
-  return user;
+  return petOwner;
 };
 
 export const deletePetOwner = async (id: string) => {

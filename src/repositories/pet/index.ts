@@ -74,7 +74,14 @@ export const listPets = async (id: string) => {
 
   const pets = await prisma.pet.findMany({
     where: { pet_owner_id: id },
-    select: { name: true, age: true, id: true },
+    select: {
+      name: true,
+      age: true,
+      id: true,
+      race: true,
+      specie: true,
+      reports: { select: { id: true } },
+    },
   });
 
   return pets;
@@ -109,6 +116,7 @@ export const deletePet = async (id: string) => {
   const petOwner = await findPetOwnerById(pet.pet_owner_id);
 
   if (!petOwner) {
+    console.log("aqui");
     return notFoundError("pet-owner");
   }
 
@@ -138,7 +146,7 @@ export const listAllPets = async (page: string, searchTerm?: string) => {
   });
 
   const organizeResponseToIdAndName = pets.map((pet) => {
-    return { petId: pet.id, name: `${pet.pet_owner.name} / ${pet.name}` };
+    return { id: pet.id, name: `${pet.pet_owner.name} / ${pet.name}` };
   });
 
   return { pets: organizeResponseToIdAndName, page: pageAsNumber, totalPages };

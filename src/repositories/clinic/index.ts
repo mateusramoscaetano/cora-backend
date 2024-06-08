@@ -1,5 +1,6 @@
 import { ICreateClinicRequestDto } from "../../dtos/clinic/icreate-clinic-request.dto";
 import { IUpdateClinicRequestDto } from "../../dtos/clinic/iupdate-clinic-request.dto";
+import { notFoundError } from "../../helpers/errors-response";
 import { prisma } from "../../prisma";
 import { Prisma } from "@prisma/client";
 const { QueryMode } = Prisma;
@@ -48,6 +49,18 @@ export const findClinicById = async (id: string) => {
   return clinic;
 };
 
+export const clinicDetail = async (id: string) => {
+  const clinic = await prisma.clinic.findUnique({
+    where: { id },
+  });
+
+  if (!clinic) {
+    return notFoundError("clinic");
+  }
+
+  return clinic;
+};
+
 export const listClinics = async (page: string, name?: string) => {
   const itemsPerPage = 10;
   const pageAsNumber = parseInt(page, 10);
@@ -60,6 +73,7 @@ export const listClinics = async (page: string, name?: string) => {
     skip,
     take: itemsPerPage,
     where: { name: { contains: name, mode: QueryMode.insensitive } },
+    orderBy: { createdAt: "desc" },
   });
 
   return { clinics, page: pageAsNumber, totalPages };
