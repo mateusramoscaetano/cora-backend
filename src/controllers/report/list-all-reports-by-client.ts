@@ -9,7 +9,7 @@ export const listAllReportsByClientController = tryCatch(
     };
     const { id } = request.params as { id: string };
 
-    const result = await listAllReportsByClient({ page }, id);
+    const result = await listAllReportsByClient(id);
     response.status(201).json(result);
   }
 );

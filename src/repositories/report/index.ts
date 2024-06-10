@@ -150,6 +150,43 @@ export const listReports = async (id: string) => {
   return response;
 };
 
+export const listAllReportsByClient = async (id: string) => {
+  const reports = await prisma.report.findMany({
+    where: { pet: { pet_owner: { id: id } } },
+    select: {
+      id: true,
+      url: true,
+      path: true,
+      createdAt: true,
+      updatedAt: true,
+      pet_id: true,
+      clinicId: true,
+      Clinic: { select: { name: true } },
+      pet: {
+        select: {
+          pet_owner: {
+            select: { name: true, doctor: { select: { name: true } } },
+          },
+          name: true,
+        },
+      },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const response = reports.map((report) => {
+    const { pet, Clinic, ...rest } = report;
+    return {
+      ...rest,
+      clinic: Clinic?.name,
+      petOwner: pet.pet_owner.name,
+      doctor: pet.pet_owner.doctor?.name,
+    };
+  });
+
+  return { reports: response };
+};
+
 export interface IListAllReportsOptions {
   page: string;
   searchTerm?: string;
@@ -220,39 +257,6 @@ export const listAllReports = async (options: IListAllReportsOptions) => {
   });
 
   const totalReports = await prisma.report.count({ where });
-  const totalPages = Math.ceil(totalReports / itemsPerPage);
-
-  return { reports, page: pageAsNumber, totalPages };
-};
-export const listAllReportsByClient = async (
-  options: IListAllReportsOptions,
-  id: string
-) => {
-  const itemsPerPage = 10;
-  const pageAsNumber = parseInt(options.page, 10);
-  const skip = (pageAsNumber - 1) * itemsPerPage;
-
-  const reports = await prisma.report.findMany({
-    where: { pet: { pet_owner: { id: id } } },
-    select: {
-      id: true,
-      url: true,
-      pet: {
-        select: {
-          pet_owner: {
-            select: { name: true, doctor: { select: { name: true } } },
-          },
-          name: true,
-        },
-      },
-      createdAt: true,
-    },
-    skip,
-    take: itemsPerPage,
-    orderBy: { createdAt: "desc" },
-  });
-
-  const totalReports = await prisma.report.count();
   const totalPages = Math.ceil(totalReports / itemsPerPage);
 
   return { reports, page: pageAsNumber, totalPages };
