@@ -11,6 +11,7 @@ import { listReports } from "../controllers/report/list-reports";
 import { listReportsByClinicController } from "../controllers/report/list-reeport-by-clinic-id";
 import { listAllReportsController } from "../controllers/report/list-all-reports";
 import { authLogin } from "../middlewares/auth-login";
+import { listAllReportsByClientController } from "../controllers/report/list-all-reports-by-client";
 
 const reportRoutes = Router();
 
@@ -21,6 +22,11 @@ reportRoutes.post(
   createReport
 );
 reportRoutes.get("/reports/list-all", listAllReportsController);
+
+reportRoutes.get(
+  "/reports/list-by-client/:id",
+  listAllReportsByClientController
+);
 
 reportRoutes.get(
   "/report/:id",
