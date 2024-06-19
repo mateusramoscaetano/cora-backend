@@ -17,6 +17,7 @@ const reportRoutes = Router();
 
 reportRoutes.post(
   "/report/create/:petId/:clinicId",
+  authLogin,
   upload.single("file"),
   validateZodParams(CreateReportParamsSchema),
   createReport

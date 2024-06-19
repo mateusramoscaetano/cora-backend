@@ -15,7 +15,7 @@ import { report } from "node:process";
 const { QueryMode } = Prisma;
 
 export const createReport = async (data: ICreateReportRequestDto) => {
-  const { petId, mimeType, path, buffer, clinicId } = data;
+  const { petId, mimeType, path, buffer, clinicId, doctorId } = data;
 
   const pet = await prisma.pet.findUnique({ where: { id: petId } });
 
@@ -42,6 +42,7 @@ export const createReport = async (data: ICreateReportRequestDto) => {
       url: petOwnerName,
       path: `${petOwnerName}/${pet.name.toLocaleLowerCase()}/${pathUUID}`,
       pet: { connect: { id: petId } },
+      doctor: { connect: { id: doctorId } },
       Clinic: { connect: { id: clinicId } },
     },
   });
@@ -118,6 +119,7 @@ export const listReports = async (id: string) => {
       updatedAt: Date;
       pet_id: string;
       clinicId: string | null;
+      doctorId: string;
     }[]
   ) => {
     const reportsWithClinicName = await Promise.all(
@@ -129,11 +131,15 @@ export const listReports = async (id: string) => {
           where: { id: report.clinicId },
         });
 
+        const lastService = await prisma.doctor.findUnique({
+          where: { id: report.doctorId },
+        });
+
         return {
           ...report,
           clinic: clinic?.name,
           petOwner: petOwner.name,
-          doctor: doctor.name || null,
+          doctor: lastService?.name || null,
         };
       })
     );
@@ -161,6 +167,7 @@ export const listAllReportsByClient = async (id: string) => {
       updatedAt: true,
       pet_id: true,
       clinicId: true,
+      doctor: { select: { name: true } },
       Clinic: { select: { name: true } },
       pet: {
         select: {
@@ -175,12 +182,12 @@ export const listAllReportsByClient = async (id: string) => {
   });
 
   const response = reports.map((report) => {
-    const { pet, Clinic, ...rest } = report;
+    const { pet, Clinic, doctor, ...rest } = report;
     return {
       ...rest,
       clinic: Clinic?.name,
       petOwner: pet.pet_owner.name,
-      doctor: pet.pet_owner.doctor?.name,
+      doctor,
     };
   });
 
@@ -251,6 +258,7 @@ export const listAllReports = async (options: IListAllReportsOptions) => {
       },
       createdAt: true,
       Clinic: { select: { name: true } },
+      doctor: { select: { name: true } },
     },
     skip,
     take: itemsPerPage,

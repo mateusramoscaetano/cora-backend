@@ -8,6 +8,7 @@ export const createReport = tryCatch(
       clinicId: string;
       petId: string;
     };
+    const { id: doctorId } = request.user;
 
     const { originalname, mimetype, buffer } =
       request.file as Express.Multer.File;
@@ -19,6 +20,7 @@ export const createReport = tryCatch(
       mimeType: mimetype,
       buffer,
       clinicId,
+      doctorId,
     });
     response.status(201).json(createReport);
   }

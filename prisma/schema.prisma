@@ -23,6 +23,7 @@ model Doctor {
   pet_owners PetOwner[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt()
+  Report     Report[]
 }
 
 model Clinic {
@@ -67,6 +68,8 @@ model Report {
   pet_id   String  @db.ObjectId
   Clinic   Clinic? @relation(fields: [clinicId], references: [id])
   clinicId String? @db.ObjectId
+  doctor   Doctor  @relation(fields: [doctorId], references: [id])
+  doctorId String  @db.ObjectId
 }
 
 model PetOwner {

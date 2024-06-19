@@ -4,4 +4,5 @@ export interface ICreateReportRequestDto {
   path: string;
   buffer: Buffer;
   clinicId: string;
+  doctorId: string;
 }

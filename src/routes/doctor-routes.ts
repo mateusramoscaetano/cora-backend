@@ -19,6 +19,12 @@ import { getDoctorDetail } from "../controllers/doctor/doctor-detail";
 
 const doctorRoutes = Router();
 
+doctorRoutes.get(
+  "/doctor/:id/detail",
+  validateZodParams(idParamsSchema),
+  getDoctorDetail
+);
+
 doctorRoutes.post(
   "/doctor/create",
   validateZod(CreateDoctorRequestDtoSchema),
@@ -38,11 +44,6 @@ doctorRoutes.post(
 );
 doctorRoutes.get("/doctor/list", listDoctors);
 doctorRoutes.get("/doctor/:id", validateZodParams(idParamsSchema), getDoctor);
-doctorRoutes.get(
-  "/doctor/:id/detail",
-  validateZodParams(idParamsSchema),
-  getDoctorDetail
-);
 
 doctorRoutes.delete(
   "/doctor/:id",
