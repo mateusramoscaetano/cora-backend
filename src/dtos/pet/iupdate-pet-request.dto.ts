@@ -3,4 +3,5 @@ export interface IUpdatePetRequestDto {
   age?: string;
   specie?: string;
   race?: string;
+  weight?: string;
 }

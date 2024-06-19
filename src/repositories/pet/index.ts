@@ -11,7 +11,7 @@ export const createPet = async (
   data: ICreatePetRequestDto,
   petOwnerId: string
 ) => {
-  const { age, name, race, specie } = data;
+  const { age, name, race, specie, weight } = data;
 
   const petOwner = await findPetOwnerById(petOwnerId);
 
@@ -25,6 +25,7 @@ export const createPet = async (
       specie,
       age,
       name,
+      weight,
       pet_owner: { connect: { id: petOwnerId } },
       reports: { create: [] },
     },
@@ -33,7 +34,7 @@ export const createPet = async (
   return pet;
 };
 export const updatePet = async (data: IUpdatePetRequestDto, id: string) => {
-  const { age, name, race, specie } = data;
+  const { age, name, race, specie, weight } = data;
 
   const pet = await prisma.pet.update({
     data: {
@@ -41,6 +42,7 @@ export const updatePet = async (data: IUpdatePetRequestDto, id: string) => {
       name,
       race,
       specie,
+      weight,
     },
     where: { id },
   });
@@ -80,6 +82,7 @@ export const listPets = async (id: string) => {
       id: true,
       race: true,
       specie: true,
+      weight: true,
       reports: { select: { id: true } },
     },
   });

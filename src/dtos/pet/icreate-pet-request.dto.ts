@@ -3,4 +3,5 @@ export interface ICreatePetRequestDto {
   age: string;
   race: string;
   specie: string;
+  weight: string;
 }

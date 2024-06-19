@@ -5,6 +5,7 @@ import { faker } from "@faker-js/faker";
 const prisma = new PrismaClient();
 
 async function seed() {
+  await prisma.report.deleteMany();
   await prisma.pet.deleteMany();
   await prisma.petOwner.deleteMany();
   await prisma.report.deleteMany();
@@ -106,6 +107,7 @@ async function seed() {
       age: String(faker.number.int()),
       race: faker.animal.dog(),
       specie: "dog",
+      weight: "2kg",
       pet_owner: { connect: { id: petOwner1.id } },
       reports: { create: [] },
     },
@@ -116,6 +118,7 @@ async function seed() {
       age: String(faker.number.int()),
       race: faker.animal.dog(),
       specie: "dog",
+      weight: "4kg",
       pet_owner: { connect: { id: petOwner2.id } },
       reports: { create: [] },
     },
@@ -126,6 +129,7 @@ async function seed() {
       age: String(faker.number.int),
       race: faker.animal.cat(),
       specie: "cat",
+      weight: "3kg",
       pet_owner: { connect: { id: petOwner3.id } },
       reports: { create: [] },
     },
@@ -139,6 +143,7 @@ async function seed() {
         race: faker.animal.cat(),
         specie: "cat",
         pet_owner_id: petOwner1.id,
+        weight: "2kg",
       },
       {
         name: faker.word.adjective(),
@@ -146,6 +151,7 @@ async function seed() {
         race: faker.animal.cat(),
         specie: "cat",
         pet_owner_id: petOwner2.id,
+        weight: "2kg",
       },
       {
         name: faker.word.adjective(),
@@ -153,6 +159,7 @@ async function seed() {
         race: faker.animal.dog(),
         specie: "dog",
         pet_owner_id: petOwner3.id,
+        weight: "2kg",
       },
     ],
   });
