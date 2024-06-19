@@ -16,7 +16,7 @@ datasource db {
 model Doctor {
   id         String     @id @default(auto()) @map("_id") @db.ObjectId
   name       String
-  role       String     @default("user")
+  role       String     @default("doctor")
   email      String     @unique
   phone      String
   password   String
