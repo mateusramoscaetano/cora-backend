@@ -8,10 +8,8 @@ export class CreatePetOwnerService {
   async createPetOwner(data: ICreatePetOwnerRequestDto, doctorId: string) {
     const { email, name, password, phone, clinicId } = data;
 
-    const hashedPassword = await hashPassword(password);
-
     const result = await createPetOwner(
-      { name, email, password: hashedPassword, phone, clinicId },
+      { name, email, password, phone, clinicId },
       doctorId
     );
 

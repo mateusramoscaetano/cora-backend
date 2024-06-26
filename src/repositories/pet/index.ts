@@ -95,7 +95,7 @@ export const getPetDetail = async (id: string) => {
     where: { id },
     include: {
       reports: { select: { id: true, url: true } },
-      pet_owner: { select: { name: true, phone: true } },
+      pet_owner: { select: { name: true, phone: true, password: true } },
     },
   });
 

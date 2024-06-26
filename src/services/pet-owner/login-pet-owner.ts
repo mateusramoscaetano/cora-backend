@@ -11,9 +11,7 @@ export class LoginPetOwnerService {
     const clinic = await findClinicByEmail(email);
 
     if (petOwner) {
-      const validatePassword = await compare(password, petOwner.password);
-
-      if (!validatePassword) {
+      if (password !== petOwner.password) {
         return unauthorized();
       }
 
